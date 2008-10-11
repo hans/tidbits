@@ -1,0 +1,36 @@
+#!/usr/bin/ruby -s
+
+require 'optparse'
+
+options = {}
+o = OptionParser.new do |o|
+	o.banner = "usage: #{File.basename(__FILE__)} [-h --help] [-p --precise] [-r --round] total_size"
+
+	o.on('-p', '--[no-]precise', 'Use a more precise calculation of Phi') do |opt|
+		options[:precise] = opt
+	end
+
+	o.on('-r', '--[no-]round', 'Round the final calculations to the nearest whole number') do |opt|
+		options[:round] = opt
+	end
+end
+o.parse!
+
+unless ARGV[0]
+	puts o.banner
+	exit 1
+end
+
+phi = if options[:precise]
+		1.61803398874989
+	else
+		1.618
+	end
+
+total_size = ARGV[0].to_i
+a_size = total_size / phi
+a_size = a_size.to_i if options[:round]
+b_size = total_size - a_size
+b_size = b_size.to_i if options[:round]
+
+puts a_size.to_s + ", " + b_size.to_s
